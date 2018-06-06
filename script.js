@@ -1,5 +1,8 @@
 'use strict';
 
+// Winner Status Enum
+let winnerStatus = Object.freeze({ Dealer: 0, Player: 1, Draw: 2 });
+
 // Card variables
 let suits = ['Hearts', 'Clubs', 'Diamonds', 'Spades'],
     values = ['Ace', 'King', 'Queen', 'Jack',
@@ -15,7 +18,7 @@ let textArea = document.getElementById('text-area'),
 // Game variables
 let gameStarted = false,
     gameOver = false,
-    playerWon = false,
+    winner = null,
     dealerCards = [],
     playerCards = [],
     dealerScore = 0,
@@ -29,7 +32,7 @@ ShowStatus();
 function NewGame() {
     gameStarted = true;
     gameOver = false;
-    playerWon = false;
+    winner = null;
 
     deck = CreateDeck();
     ShuffleDeck(deck);
@@ -148,16 +151,18 @@ function CheckForEndOfGame() {
     }
 
     if (playerScore > 21) {
-        playerWon = false;
+        winner = winnerStatus.Dealer;
         gameOver = true;
     } else if (dealerScore > 21) {
-        playerWon = true;
+        winner = winnerStatus.Player;
         gameOver = true;
     } else if (gameOver) {
         if (playerScore > dealerScore) {
-            playerWon = true;
+            winner = winnerStatus.Player;
+        } else if (playerScore === dealerScore) {
+            winner = winnerStatus.Draw;
         } else {
-            playerWon = false;
+            winner = winnerStatus.Dealer;
         }
     }
 }
@@ -192,10 +197,12 @@ function ShowStatus() {
     CheckForEndOfGame();
 
     if (gameOver) {
-        if (playerWon) {
+        if (winner === winnerStatus.Player) {
             textArea.innerText += "YOU WIN!";
-        } else {
+        } else if (winner === winnerStatus.Dealer) {
             textArea.innerText += "DEALER WINS";
+        } else {
+            textArea.innerText += "IT'S A DRAW";
         }
         newGameButton.style.display = 'inline';
         hitButton.style.display = 'none';
