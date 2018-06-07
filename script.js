@@ -6,7 +6,7 @@ let winnerStatus = Object.freeze({ Dealer: 0, Player: 1, Draw: 2 });
 // Card variables
 let suits = ['Hearts', 'Clubs', 'Diamonds', 'Spades'],
     values = ['Ace', 'King', 'Queen', 'Jack',
-    'Ten', 'Nine', 'Eight', 'Seven', 'Six',
+    'Nine', 'Eight', 'Seven', 'Six',
     'Five', 'Four', 'Three', 'Two'];
 
 // DOM variables
@@ -89,6 +89,11 @@ function GetCardString(card) {
     return `${card.value} of ${card.suit}`;
 }
 
+function GetCard(card) {
+    let styledCard = `<div class="card ${GetCardStylingValue(card)} card-${card.suit.toLowerCase()}"><span></span></div>`;
+    return styledCard;
+}
+
 function GetNextCard() {
     return deck.shift();
 }
@@ -115,6 +120,37 @@ function GetCardNumericValue(card) {
             return 9;
         default:
             return 10;
+    }
+}
+
+function GetCardStylingValue(card) {
+    switch(card.value) {
+        case 'Ace':
+            return 'card-a';
+        case 'Two':
+            return 'card-2';
+        case 'Three':
+            return 'card-3';
+        case 'Four':
+            return 'card-4';
+        case 'Five':
+            return 'card-5';
+        case 'Six':
+            return 'card-6';
+        case 'Seven':
+            return 'card-7';
+        case 'Eight':
+            return 'card-8';
+        case 'Nine':
+            return 'card-9';
+        case 'Jack':
+            return 'card-j';
+        case 'Queen':
+            return 'card-q';
+        case 'King':
+            return 'card-k';
+        default:
+            return '';
     }
 }
 
@@ -169,40 +205,40 @@ function CheckForEndOfGame() {
 
 function ShowStatus() {
     if (!gameStarted) {
-        textArea.innerText = 'Welcome to Blackjack!';
+        textArea.innerHTML = 'Welcome to Blackjack!';
         return;
     }
 
     let dealerCardString = '';
     for (let i = 0; i < dealerCards.length; i++) {
-        dealerCardString += GetCardString(dealerCards[i]) + '\n';
+        dealerCardString += GetCard(dealerCards[i]) + '\n';
     }
 
     let playerCardString = '';
     for (let i = 0; i < playerCards.length; i++) {
-        playerCardString += GetCardString(playerCards[i]) + '\n';
+        playerCardString += GetCard(playerCards[i]) + '\n';
     }
 
     UpdateScores();
 
-    textArea.innerText = 
-    'Dealer has:\n' +
+    textArea.innerHTML = 
+    '<p>Dealer has:</p>' +
     dealerCardString +
-    '(score: ' + dealerScore + ')\n\n' +
+    '<p>(score: ' + dealerScore + ')</p>' +
 
-    'Player has:\n' +
+    '<p>Player has:\n</p>' +
     playerCardString +
-    '(score: ' + playerScore + ')\n\n';
+    '<p>(score: ' + playerScore + ')</p>';
 
     CheckForEndOfGame();
 
     if (gameOver) {
         if (winner === winnerStatus.Player) {
-            textArea.innerText += "YOU WIN!";
+            textArea.innerHTML += "YOU WIN!";
         } else if (winner === winnerStatus.Dealer) {
-            textArea.innerText += "DEALER WINS";
+            textArea.innerHTML += "DEALER WINS";
         } else {
-            textArea.innerText += "IT'S A DRAW";
+            textArea.innerHTML += "IT'S A DRAW";
         }
         newGameButton.style.display = 'inline';
         hitButton.style.display = 'none';
